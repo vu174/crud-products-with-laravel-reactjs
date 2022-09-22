@@ -1,6 +1,7 @@
 const routes = {
-    home: '/',
-    notFound: '/*',
+    home: "/",
+    newProduct: "/product/new",
+    notFound: "/*",
 };
 
 export default routes;
