@@ -3,9 +3,9 @@
 A very simple Laravel 9 + ReactJS 18.2 + Vite 3.0 based **CRUD** Starter template for SPA Application.
 ## Screenshots
 
-![list product]('./screenshots/list.png')
-![add product]('./screenshots/add.png')
-![edit product]('./screenshots/edit.png')
+![list product](./screenshots/list.png)
+![add product](./screenshots/add.png)
+![edit product](./screenshots/edit.png)
 
 ## Installation
 
