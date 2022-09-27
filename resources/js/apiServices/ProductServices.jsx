@@ -1,9 +1,11 @@
 import * as request from "../utils/request";
 import iziToast from "../components/toast/Index";
+import { routesApi } from "../config/Routes";
+import { replaceRouteApi } from "../utils/commom";
 
 export const get = async () => {
     try {
-        return await request.get("products");
+        return await request.get(routesApi.listProduct);
     } catch (e) {
         let errorObject = e.response.data !== undefined ? e.response.data.errors : {};
         if (errorObject) {
@@ -17,7 +19,7 @@ export const get = async () => {
 
 export const store = async (data = {}) => {
     try {
-        await request.post("add_product", data);
+        await request.post(routesApi.addProduct, data);
         iziToast("success", "Success!", "Product added!");
         return true;
     } catch (e) {
@@ -33,7 +35,7 @@ export const store = async (data = {}) => {
 
 export const edit = async (id = null) => {
     try {
-        return await request.get(`products/${id}/edit`);
+        return await request.get(replaceRouteApi(routesApi.editProduct, 'id', id));
     } catch (e) {
         let errorObject = e.response.data !== undefined ? e.response.data.errors : {};
         if (errorObject) {
@@ -47,7 +49,7 @@ export const edit = async (id = null) => {
 
 export const update = async (id = null, data = {}) => {
     try {
-        await request.post(`products/${id}/update`, data);
+        await request.post(replaceRouteApi(routesApi.updateProduct, 'id', id), data);
         iziToast("success", "Success!", "Product updated!");
         return true;
     } catch (e) {

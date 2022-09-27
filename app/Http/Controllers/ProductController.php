@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
@@ -11,6 +12,11 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class ProductController extends Controller
 {
 
+    /**
+     * Index get list of products.
+     *
+     * @return JsonResponse
+     */
     public function index()
     {
         $products = Product::select(['id', 'name', 'description', 'photo', 'type', 'price', 'quantity'])->get();
@@ -19,6 +25,12 @@ class ProductController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * Create a new product.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function store(Request $request)
     {
         $validator = $request->validate([
@@ -69,6 +81,12 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Get details of product.
+     *
+     * @param Product $product
+     * @return JsonResponse
+     */
     public function edit(Product $product)
     {
         return response()->json([
@@ -76,6 +94,13 @@ class ProductController extends Controller
         ], ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * Update an existing product.
+     *
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     */
     public function update(Request $request, Product $product)
     {
         $validator = $request->validate([
@@ -126,6 +151,12 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * Delete the product.
+     *
+     * @param Product $product
+     * @return JsonResponse
+     */
     public function delete(Product $product)
     {
         try {
