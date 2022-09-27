@@ -1,12 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-const New = () => {
+import * as ProductService from "../../apiServices/ProductServices";
+
+const Edit = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [photo, setPhoto] = useState("");
     const [type, setType] = useState("");
     const [quantity, setQuantity] = useState("");
     const [price, setPrice] = useState("");
+
+    const [avatar, setAvatar] = useState(true);
+
+    const navigate = useNavigate();
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        getDetailsProduct();
+    }, []);
+
+    const getDetailsProduct = async () => {
+        let res = await ProductService.edit(`${id}`);
+        const { name, description, photo, type, quantity, price } = res.productDetails;
+        setName(name);
+        setDescription(description);
+        setPhoto(photo);
+        setType(type);
+        setQuantity(quantity);
+        setPrice(price);
+    };
 
     const handleUpload = (e) => {
         let file = e.target.files[0];
@@ -20,22 +44,48 @@ const New = () => {
                 footer: "Why do I have this issue?",
             });
         }
-        reader.onloadend = (reader) => {
+
+        setAvatar(false);
+
+        reader.onloadend = () => {
             setPhoto(reader.result);
         };
 
         reader.readAsDataURL(file);
     };
 
+    const ourImage = (photo) => {
+        return "/upload/" + photo;
+    };
+
+    const handleUpdateProduct = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("type", type);
+        formData.append("quantity", quantity);
+        formData.append("price", price);
+        formData.append("image", photo);
+
+        const fetchApi = await ProductService.update(id, formData);
+
+        if (fetchApi) {
+            navigate("/");
+        }
+    };
+
     return (
         <div className="container">
-            <div className="products__create ">
+            <div className="products__edit">
                 <div className="products__create__titlebar dflex justify-content-between align-items-center">
                     <div className="products__create__titlebar--item">
-                        <h1 className="my-1">Add Product</h1>
+                        <h1 className="my-1">Edit Product</h1>
                     </div>
                     <div className="products__create__titlebar--item">
-                        <button className="btn btn-secondary ml-1">Save</button>
+                        <button className="btn btn-secondary ml-1" onClick={(event) => handleUpdateProduct(event)}>
+                            Save
+                        </button>
                     </div>
                 </div>
 
@@ -60,18 +110,29 @@ const New = () => {
                                 onChange={(e) => {
                                     setDescription(e.target.value);
                                 }}
-                                value={description}
+                                value={description ?? ''}
                             ></textarea>
 
                             <div className="products__create__main--media--images mt-2">
                                 <ul className="products__create__main--media--images--list list-unstyled">
                                     <li className="products__create__main--media--images--item">
                                         <div className="products__create__main--media--images--item--imgWrapper">
-                                            <img
-                                                className="products__create__main--media--images--item--img"
-                                                alt=""
-                                                src={photo}
-                                            />
+                                            {avatar === true ? (
+                                                <img
+                                                    className="products__create__main--media--images--item--img"
+                                                    src={ourImage(photo)}
+                                                    alt={name}
+                                                    height="100px"
+                                                    width="117px"
+                                                />
+                                            ) : (
+                                                <img
+                                                    className="products__create__main--media--images--item--img"
+                                                    src={photo}
+                                                    alt={name}
+                                                    height="40px"
+                                                />
+                                            )}
                                         </div>
                                     </li>
                                     <li className="products__create__main--media--images--item">
@@ -98,30 +159,51 @@ const New = () => {
                         <div className="card py-2 px-2 bg-white">
                             <div className="my-3">
                                 <p>Product type</p>
-                                <input type="text" className="input" />
+                                <input
+                                    type="text"
+                                    className="input"
+                                    value={type}
+                                    onChange={(event) => {
+                                        setType(event.target.value);
+                                    }}
+                                />
                             </div>
                             <hr />
-
                             <div className="my-3">
                                 <p>Inventory</p>
-                                <input type="text" className="input" />
+                                <input
+                                    type="text"
+                                    className="input"
+                                    value={quantity}
+                                    onChange={(event) => {
+                                        setQuantity(event.target.value);
+                                    }}
+                                />
                             </div>
                             <hr />
-
                             <div className="my-3">
                                 <p>Price</p>
-                                <input type="text" className="input" />
+                                <input
+                                    type="text"
+                                    className="input"
+                                    value={price}
+                                    onChange={(event) => {
+                                        setPrice(event.target.value);
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="dflex justify-content-between align-items-center my-3">
                     <p></p>
-                    <button className="btn btn-secondary">Save</button>
+                    <button className="btn btn-secondary" onClick={(event) => handleUpdateProduct(event)}>
+                        Save
+                    </button>
                 </div>
             </div>
         </div>
     );
 };
 
-export default New;
+export default Edit;

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 // sweetalert2
 import Swal from "sweetalert2/dist/sweetalert2";
 import "sweetalert2/dist/sweetalert2.css";
+import "izitoast/dist/css/iziToast.css";
 
 import "./bootstrap";
 import App from "./components/App";
